@@ -1,7 +1,7 @@
 {
-  "name": "my-plugin-name",
+  "name": "dc-countdown-plugin",
   "version": "0.0.1",
-  "description": "Your plugin description here",
+  "description": "Countdown plugin for Donkeyclip Motorcortex",
   "main": "dist/bundle.cjs.js",
   "module": "dist/bundle.esm.js",
   "browser": "dist/bundle.umd.js",

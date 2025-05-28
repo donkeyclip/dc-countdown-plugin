@@ -53,27 +53,57 @@ class Countdown extends motorcortex.Effect {
   onGetContext() {
     const now = Date.now();
     const target = this.targetValue;
-    const delta = target - now;
+    let delta = target - now;
+    if (delta < 0) {
+      delta = this.targetValue;
+    }
+    delta = Math.floor(delta / 1000); // convert to seconds
+
     if (this.attrs.type === "seconds") {
       this.down = ms => {
-        console.log('here');
         const elapsedSeconds = Math.floor(ms / 1000);
         const remainingSeconds = delta - elapsedSeconds;
-        return remainingSeconds % 60;
+        let value = remainingSeconds % 60;
+        if (value < 0) value = 0;
+        if (this.attrs.forceDoubleDigit) {
+          value = value.toString().padStart(2, '0');
+        }
+        return value;
       };
     } else if (this.attrs.type === "minutes") {
       this.down = ms => {
         const elapsedSeconds = Math.floor(ms / 1000);
         const remainingSeconds = delta - elapsedSeconds;
         const secsInsightHour = remainingSeconds % (60 * 60);
-        return Math.floor(secsInsightHour / 60);
+        let value = Math.floor(secsInsightHour / 60);
+        if (value < 0) value = 0;
+        if (this.attrs.forceDoubleDigit) {
+          value = value.toString().padStart(2, '0');
+        }
+        return value;
       };
     } else if (this.attrs.type === "hours") {
       this.down = ms => {
         const elapsedSeconds = Math.floor(ms / 1000);
         const remainingSeconds = delta - elapsedSeconds;
         const secsInsightDay = remainingSeconds % (60 * 60 * 24);
-        return Math.floor(secsInsightDay / (60 * 60));
+        let value = Math.floor(secsInsightDay / (60 * 60));
+        if (value < 0) value = 0;
+        if (this.attrs.forceDoubleDigit) {
+          value = value.toString().padStart(2, '0');
+        }
+        return value;
+      };
+    } else if (this.attrs.type === "days") {
+      this.down = ms => {
+        const elapsedSeconds = Math.floor(ms / 1000);
+        const remainingSeconds = delta - elapsedSeconds;
+        let value = Math.floor(remainingSeconds / (60 * 60 * 24));
+        if (value < 0) value = 0;
+        if (this.attrs.forceDoubleDigit) {
+          value = value.toString().padStart(2, '0');
+        }
+        return value;
       };
     } else {
       throw new Error("Invalid type for countdown effect");
@@ -105,12 +135,12 @@ class Countdown extends motorcortex.Effect {
     if (this.attrs.operation === "free") {
       return;
     }
-    const value = this.down(millisecond);
+    let value = this.down(millisecond);
     this.element.innerHTML = value;
   }
 }
 
-var name = "my-plugin-name";
+var name = "dc-countdown-plugin";
 var version = "0.0.1";
 
 var index = {
@@ -120,20 +150,40 @@ var index = {
   // don't touch this
   incidents: [{
     exportable: Countdown,
-    name: "Countdown" // name your Incident any way you want
-    //   attributesValidationRules: {
-    //     // define your attributeValidationRules so MotorCortex can automatically validate them on instantiation 
-    //     // also so your Incidents are directly embedable to DonkeyClip
-    //     animatedAttrs: {
-    //       type: "object",
-    //       props: {
-    //           attr: {
-    //               type: 'string'
-    //           }
-    //         // validation rules as per [fastest-validator](https://www.npmjs.com/package/fastest-validator) library
-    //       }
-    //     }
-    //   }
+    name: "Countdown",
+    // name your Incident any way you want
+    attributesValidationRules: {
+      forceDoubleDigit: {
+        type: "boolean",
+        // if true, the countdown will always be displayed with two digits (e.g. 01 instead of 1)
+        default: false
+      },
+      operation: {
+        type: "string",
+        enum: ["free", "fixed"],
+        // "free" operation makes the countdown independent of the Clip's execution
+        default: "fixed"
+      },
+      type: {
+        type: "string",
+        enum: ["seconds", "minutes", "hours", "days"],
+        // the type of the countdown
+        default: "seconds"
+      },
+      animatedAttrs: {
+        type: "object",
+        props: {
+          // it's either a unix timestamp in milliseconds which is the target time for the countdown or a number of milliseconds which defines the countdown duration
+          // No need to define which of the two. If the number is less than the current unix time it'll be treated as a duration in milliseconds, otherwise as a unix timestamp in milliseconds
+          time: {
+            type: 'number',
+            positive: true,
+            integer: true
+          }
+          // validation rules as per [fastest-validator](https://www.npmjs.com/package/fastest-validator) library
+        }
+      }
+    }
   }]
 };
 

@@ -1,44 +1,39 @@
-# motorcortex-plugin-starter
+# dc-countdown-plutin
 
-## Purpose
+# Purpose
+Easily turn any element in your html to a countdown slot.
 
-A starter plugin for creating MotorCortex plugins.
+# Logic
+Each countdown consists of many fields. More specifically our plugin supports:
+- seconds
+- minutes
+- hours
 
-## Structure and Contents
+This plugin allows you to initiate a countdown and pick the elements in your clip that will host each of
+the three supported fields.
 
-It includes:
+# Example
+```javascript
+const secs_countdown = new CountdownPlugin.Countdown(
+  {
+    type: "minutes", // can be either 'seconds', 'minutes' or 'hours'
+    operation: "free", // can be either 'free' or 'fixed'. Default 'fixed'
+    forceDoubleDigit: true, // set it to true if you want to see double digits always (e.g. "01" instead of "1")
+    animatedAttrs: {
+      time: time, // set the target time. Is always in milliseconds and can either be a future uinx timestamp or just the duration of the countdown in milliseconds. Don't worry the plugin will automtically figure out what you meant
+    },
+  },
+  {
+    selector: `#your-selector`,
+    duration: 1000,
+  },
+);
+```
 
-- rollup configuration & ready to use build tools
-- a pre-configured webpack for the needs of the demo
-- pre-configured eslint and babel
-- and a set of ready to work on, Incidents:
-  - **Effect**, for developing a custom Effect
-  - **HTMLClip**, for developing a pre-configured HTML Clip with HTML, CSS and Incidents
-  - **Combo**, for developing custom, pre-configured Combos
-  - **Clip**, for developing custom browser Clips, such as canvas
-
-These Incidents are the starting point for developing a plugin. They extend the right
-Classes from MotorCortex SDK and they have blank implementations of all the methods that
-should or can be overwritten, with comments.
-
-Along with the comments you can always refer to <a href="https://docs.motorcortexjs.com/" target="_blank">MotorCortex documentation</a>
-for detailed information on how to implement a plugin.
-
-## How to use
-
-Once you've decided what exactly your pluign is going to do and once we've decided on the type of Incident(s)
-you need to implement, you can start directly from the basic/blank implementations and either work on them directly
-or just copy them.
-Change the names of the files, name your Classes however you want but always make sure you import and
-expose everything properly on your index.js file.
-
-Also, it's imortant to change your package.json file so you can name your pluign, provide details and more.
-
-## Commands
-
-- `npm run build`: builds the dist of your pluign along with the demo
-- `npm run build:demo`: builds just the demo
-- `npm start`: builds everything and starts the demo
-- `npm start:demo`: just starts the demo
-
-## Have fun!!!
+# Parameters
+| Parameter            | Description | Type | Default |
+|----------------------|-------------|------|---------|
+| `type`               | Define which of the three available fields will be illustrated via this incident | `string` one of `days`, `seconds`, `minutes`, `hours` |`seconds`|
+| `operation`          | Define if the countdown will follow the clip's time or it'll operate freely and independently | `string`, one of `fixed` and `free` | `fixed`|
+| `forceDoubleDigit`   | Make it true if you want to always have double digits in your fields. E.g. `01` instead of just `1` | `boolean` | `false` |
+| `animatedAttrs.time` | Defines the target time of the countdown either via a unix timestamp in milliseconds or via providing the duration of the countdown in milliseconds. You don't need to specify which of the two you want, the plugin will figure it out automatically |`number`, always in milliseconds |         |
