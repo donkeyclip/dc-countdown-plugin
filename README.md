@@ -16,7 +16,7 @@ the three supported fields.
 ```javascript
 const secs_countdown = new CountdownPlugin.Countdown(
   {
-    type: "minutes", // can be either 'seconds', 'minutes' or 'hours'
+    type: "minutes", // can be either 'days', 'seconds', 'minutes' or 'hours'
     operation: "free", // can be either 'free' or 'fixed'. Default 'fixed'
     forceDoubleDigit: true, // set it to true if you want to see double digits always (e.g. "01" instead of "1")
     animatedAttrs: {

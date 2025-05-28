@@ -5,6 +5,7 @@
   "main": "dist/bundle.cjs.js",
   "module": "dist/bundle.esm.js",
   "browser": "dist/bundle.umd.js",
+  "private": false,
   "type": "module",
   "author": "",
   "repository": {
@@ -18,11 +19,11 @@
   "scripts": {
     "lint": "eslint -c .eslintrc src/**/*.js",
     "lint:fix": "npm run lint -- --fix",
+    "build:demo": "webpack --mode=production --config ./demo/webpack.config.cjs",
     "build": "npm run build:lib && npm run build:demo",
     "build:lib": "rollup -c",
     "start": "npm run build:lib && concurrently -c \"cyan.bold,magenta.bold\" \"npm:build:lib -- -w\"  \"npm:start:demo\" ",
     "start:demo": "webpack serve --mode=development --config ./demo/webpack.config.cjs",
-    "build:demo": "webpack --mode=production --config ./demo/webpack.config.cjs",
     "test": "HERE GOES YOUR TEST TASK",
     "test:prod": "npm run lint",
     "prepare": "husky install"
