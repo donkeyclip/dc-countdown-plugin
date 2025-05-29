@@ -138,7 +138,7 @@ class Countdown extends Effect {
   }
 }
 
-var name = "dc-countdown-plugin";
+var name = "@donkeyclip/dc-countdown-plugin";
 var version = "0.0.1";
 
 var index = {

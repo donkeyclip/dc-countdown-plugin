@@ -1,6 +1,6 @@
 {
   "name": "@donkeyclip/dc-countdown-plugin",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Countdown plugin for Donkeyclip Motorcortex",
   "main": "dist/bundle.cjs.js",
   "module": "dist/bundle.esm.js",
@@ -41,7 +41,7 @@
     ]
   },
   "peerDependencies": {
-    "@donkeyclip/motorcortex": "7.5.4"
+    "@donkeyclip/motorcortex": "^9.21.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.4",
@@ -52,7 +52,7 @@
     "@babel/plugin-transform-react-jsx": "^7.22.15",
     "@babel/preset-env": "^7.23.3",
     "@babel/preset-react": "^7.23.3",
-    "@donkeyclip/motorcortex": "^9.13.1",
+    "@donkeyclip/motorcortex": "^9.21.0",
     "@donkeyclip/motorcortex-player": "2.10.11",
     "@rollup/plugin-babel": "6.0.4",
     "@rollup/plugin-commonjs": "25.0.8",

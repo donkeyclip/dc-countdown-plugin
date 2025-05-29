@@ -1,16 +1,17 @@
-# dc-countdown-plutin
+# dc-countdown-plugin
 
 # Purpose
 Easily turn any element in your html to a countdown slot.
 
 # Logic
 Each countdown consists of many fields. More specifically our plugin supports:
-- seconds
-- minutes
+- days
 - hours
+- minutes
+- seconds
 
 This plugin allows you to initiate a countdown and pick the elements in your clip that will host each of
-the three supported fields.
+the four supported fields.
 
 # Example
 ```javascript
