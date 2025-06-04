@@ -1,46 +1,9 @@
-import Countdown from './internal_plugin/Incidents/Effect.js';
-import GayCD from './incidents/GayCD.js';
-
-import {name,version}  from '../package.json'
+import Countdown from './Incidents/Effect';
 
 export default {
-  npm_name: name, // don't touch this
-  version: version, // don't touch this
+  // npm_name: "@internal_plugin/cd_core", // don't touch this
+  // version: "1.0.0", // don't touch this
   incidents: [
-    {
-        exportable: GayCD,
-        name: "GayCD", // name your Incident any way you want
-        attributesValidationRules: {
-            hours: {
-                type: "object",
-                optional: true,
-                props: {
-                    selector: { type: "string" }
-                }
-            },
-            minutes: {
-                type: "object",
-                optional: true,
-                props: {
-                    selector: { type: "string" }
-                }
-            },
-            seconds: {
-            type: "object",
-            optional: true,
-                props: {
-                    selector: { type: "string" }
-                }
-            },
-            days: {
-            type: "object",
-            optional: true,
-                props: {
-                    selector: { type: "string" }
-                }
-            }
-        }
-    },
     {
       exportable: Countdown,
       name: "Countdown", // name your Incident any way you want

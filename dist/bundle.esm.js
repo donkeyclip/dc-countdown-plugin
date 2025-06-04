@@ -1,4 +1,36 @@
-import { Effect } from '@donkeyclip/motorcortex';
+import { Effect, loadPlugin } from '@donkeyclip/motorcortex';
+
+const getDividor = (target, context) => {
+  if (target === "seconds") {
+    if (context === "seconds") {
+      return 1; // 1 second in seconds
+    } else if (context === "minutes") {
+      return 60; // 60 seconds in a minute
+    } else if (context === "hours") {
+      return 60 * 60; // 3600 seconds in an hour
+    } else if (context === "days") {
+      return 60 * 60 * 24; // 86400 seconds in a day
+    } else return 60;
+  } else if (target === "minutes") {
+    const minute = 60;
+    if (context === "hours") {
+      return 60 * minute; // 60 minutes in an hour
+    } else if (context === "days") {
+      return 60 * 24 * minute; // 1440 minutes in a day
+    } else if (context === "minutes") {
+      return minute; // 1 minute in minutes
+    } else return 60 * minute; // 60 seconds in a minute
+  } else if (target === "hours") {
+    const hour = 60 * 60;
+    if (context === "days") {
+      return 24 * hour; // 24 hours in a day
+    } else if (context === "hours") {
+      return hour; // 1 hour in hours
+    } else return 24 * hour; // 24 hours in a day
+  } else if (target === "days") {
+    return 24 * 60 * 60;
+  }
+};
 
 /**
  * The purpose of Effects is to timely alter the state or value of attributes of
@@ -61,7 +93,7 @@ class Countdown extends Effect {
       this.down = ms => {
         const elapsedSeconds = Math.floor(ms / 1000);
         const remainingSeconds = delta - elapsedSeconds;
-        let value = remainingSeconds % 60;
+        let value = remainingSeconds % getDividor(this.attrs.type, this.attrs.context);
         if (value < 0) value = 0;
         if (this.attrs.forceDoubleDigit) {
           value = value.toString().padStart(2, '0');
@@ -72,7 +104,7 @@ class Countdown extends Effect {
       this.down = ms => {
         const elapsedSeconds = Math.floor(ms / 1000);
         const remainingSeconds = delta - elapsedSeconds;
-        const secsInsightHour = remainingSeconds % (60 * 60);
+        const secsInsightHour = remainingSeconds % getDividor(this.attrs.type, this.attrs.context);
         let value = Math.floor(secsInsightHour / 60);
         if (value < 0) value = 0;
         if (this.attrs.forceDoubleDigit) {
@@ -84,7 +116,7 @@ class Countdown extends Effect {
       this.down = ms => {
         const elapsedSeconds = Math.floor(ms / 1000);
         const remainingSeconds = delta - elapsedSeconds;
-        const secsInsightDay = remainingSeconds % (60 * 60 * 24);
+        const secsInsightDay = remainingSeconds % getDividor(this.attrs.type, this.attrs.context);
         let value = Math.floor(secsInsightDay / (60 * 60));
         if (value < 0) value = 0;
         if (this.attrs.forceDoubleDigit) {
@@ -138,8 +170,83 @@ class Countdown extends Effect {
   }
 }
 
+var InternalPluginDef = {
+  // npm_name: "@internal_plugin/cd_core", // don't touch this
+  // version: "1.0.0", // don't touch this
+  incidents: [{
+    exportable: Countdown,
+    name: "Countdown",
+    // name your Incident any way you want
+    attributesValidationRules: {
+      forceDoubleDigit: {
+        type: "boolean",
+        // if true, the countdown will always be displayed with two digits (e.g. 01 instead of 1)
+        default: false
+      },
+      operation: {
+        type: "string",
+        enum: ["free", "fixed"],
+        // "free" operation makes the countdown independent of the Clip's execution
+        default: "fixed"
+      },
+      type: {
+        type: "string",
+        enum: ["seconds", "minutes", "hours", "days"],
+        // the type of the countdown
+        default: "seconds"
+      },
+      animatedAttrs: {
+        type: "object",
+        props: {
+          // it's either a unix timestamp in milliseconds which is the target time for the countdown or a number of milliseconds which defines the countdown duration
+          // No need to define which of the two. If the number is less than the current unix time it'll be treated as a duration in milliseconds, otherwise as a unix timestamp in milliseconds
+          time: {
+            type: 'number',
+            positive: true,
+            integer: true
+          }
+          // validation rules as per [fastest-validator](https://www.npmjs.com/package/fastest-validator) library
+        }
+      }
+    }
+  }]
+};
+
+loadPlugin(InternalPluginDef);
+
+/**
+ * For details of the Combo concept and usage please refer to
+ * documentation.
+ *
+ * As soon as you are familiar with MotorCortex.Combo it's extremely
+ * easy to implement your own Incidents by extending it. The only
+ * method you need to write is the get incidents where you can
+ * define your fix incidents of your Combo. Feel free to use
+ * any dynamic value (@stagger, @expression, @attribute) as well as
+ * to use this.attrs in order to access your Combo's attrs and produce
+ * dynamic results.
+ */
+class GayCD extends Effect {
+  onGetContext() {
+    const selectors = {
+      'hours': '#hours',
+      'minutes': '#minutes',
+      'seconds': '#seconds',
+      'days': '#days'
+    };
+    Object.keys(selectors).forEach(key => {
+      if (this.attrs[key] && this.attrs[key].selector) {
+        selectors[key] = this.attrs[key].selector;
+      }
+    });
+    Object.keys(selectors).forEach(key => {
+      this.element.querySelector(selectors[key]);
+    });
+  }
+}
+
 var name = "@donkeyclip/dc-countdown-plugin";
-var version = "0.0.1";
+var version = "0.0.3";
 
 var index = {
   npm_name: name,
@@ -147,6 +254,48 @@ var index = {
   version: version,
   // don't touch this
   incidents: [{
+    exportable: GayCD,
+    name: "GayCD",
+    // name your Incident any way you want
+    attributesValidationRules: {
+      hours: {
+        type: "object",
+        optional: true,
+        props: {
+          selector: {
+            type: "string"
+          }
+        }
+      },
+      minutes: {
+        type: "object",
+        optional: true,
+        props: {
+          selector: {
+            type: "string"
+          }
+        }
+      },
+      seconds: {
+        type: "object",
+        optional: true,
+        props: {
+          selector: {
+            type: "string"
+          }
+        }
+      },
+      days: {
+        type: "object",
+        optional: true,
+        props: {
+          selector: {
+            type: "string"
+          }
+        }
+      }
+    }
+  }, {
     exportable: Countdown,
     name: "Countdown",
     // name your Incident any way you want

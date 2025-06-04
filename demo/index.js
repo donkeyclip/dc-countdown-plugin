@@ -171,6 +171,7 @@ function getIncidents(operation, time, selectorPrefix, forceDoubleDigit) {
   const newEffect3 = new MyPlugin.Countdown(
     {
       type: "hours",
+      context: "hours",
       operation,
       forceDoubleDigit,
       animatedAttrs: {
@@ -220,5 +221,17 @@ const newEffect = new MyPlugin.Countdown(
 );
 
 clip.addIncident(newEffect, 0);
+
+const gayCD = new MyPlugin.GayCD(
+  {
+    hours: { selector: "#free2-hours" },
+  }, 
+  {
+    selector: ".row",
+    duration: 20000,
+  }
+);
+
+console.log(clip.addIncident(gayCD, 0));
 
 new Player({ clip });

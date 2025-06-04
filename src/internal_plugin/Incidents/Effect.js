@@ -1,5 +1,38 @@
 import { Effect } from "@donkeyclip/motorcortex";
 
+const getDividor = (target, context) => {
+  if(target === "seconds") {
+    if(context === "seconds") {
+      return 1; // 1 second in seconds
+    } else if(context === "minutes") {
+      return 60; // 60 seconds in a minute
+    } else if(context === "hours") {
+      return 60 * 60; // 3600 seconds in an hour
+    } else if(context === "days") {
+      return 60 * 60 * 24; // 86400 seconds in a day
+    } else return 60;
+  } else if(target === "minutes") {
+    const minute = 60;
+    if(context === "hours") {
+      return 60 * minute; // 60 minutes in an hour
+    } else if(context === "days") {
+      return 60 * 24 * minute; // 1440 minutes in a day
+    } else if(context === "minutes") {
+      return minute; // 1 minute in minutes
+    } else return 60 * minute; // 60 seconds in a minute
+  } else if(target === "hours") {
+    const hour = 60 * 60;
+    if(context === "days") {
+      return 24 * hour; // 24 hours in a day
+    } else if(context === "hours") {
+      return hour; // 1 hour in hours
+    } else return 24 * hour; // 24 hours in a day
+  } else if(target === "days") {
+    return 24 * 60 * 60;
+  }
+}
+
+
 /**
  * The purpose of Effects is to timely alter the state or value of attributes of
  * selected elements of the context, specified on the "selector"
@@ -61,7 +94,7 @@ export default class Countdown extends Effect {
       this.down = (ms)=> {
         const elapsedSeconds = Math.floor(ms / 1000);
         const remainingSeconds = delta - elapsedSeconds;
-        let value = remainingSeconds%60;
+        let value = remainingSeconds%getDividor(this.attrs.type, this.attrs.context);
 
         if(value < 0) value = 0;
         if(this.attrs.forceDoubleDigit) {
@@ -73,7 +106,7 @@ export default class Countdown extends Effect {
       this.down = (ms)=> {
         const elapsedSeconds = Math.floor(ms / 1000);
         const remainingSeconds = delta - elapsedSeconds;
-        const secsInsightHour = remainingSeconds%(60 * 60);
+        const secsInsightHour = remainingSeconds%getDividor(this.attrs.type, this.attrs.context);
         let value = Math.floor(secsInsightHour / 60);
         if(value < 0) value = 0;
         if(this.attrs.forceDoubleDigit) {
@@ -85,7 +118,7 @@ export default class Countdown extends Effect {
       this.down = (ms)=> {
         const elapsedSeconds = Math.floor(ms / 1000);
         const remainingSeconds = delta - elapsedSeconds;
-        const secsInsightDay = remainingSeconds%(60 * 60 * 24);
+        const secsInsightDay = remainingSeconds%getDividor(this.attrs.type, this.attrs.context);
         let value = Math.floor(secsInsightDay / (60 * 60));
         if(value < 0) value = 0;
         if(this.attrs.forceDoubleDigit) {
