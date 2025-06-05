@@ -1,10 +1,10 @@
 {
   "name": "@donkeyclip/dc-countdown-plugin",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Countdown plugin for Donkeyclip Motorcortex",
-  "main": "dist/bundle.cjs.js",
-  "module": "dist/bundle.esm.js",
-  "browser": "dist/bundle.umd.js",
+  "main": "dist/dc-countdown-plugin.cjs.js",
+  "module": "dist/dc-countdown-plugin.esm.js",
+  "browser": "dist/dc-countdown-plugin.umd.js",
   "private": false,
   "author": "",
   "repository": {

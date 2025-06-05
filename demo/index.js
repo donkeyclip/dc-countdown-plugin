@@ -1,6 +1,6 @@
 import { HTMLClip, loadPlugin } from "@donkeyclip/motorcortex";
 import Player from "@donkeyclip/motorcortex-player";
-import MyPluginDefinition from "../dist/bundle.esm.js";
+import MyPluginDefinition from "../dist/dc-countdown-plugin.esm.js";
 const MyPlugin = loadPlugin(MyPluginDefinition);
 
 const clip = new HTMLClip({
