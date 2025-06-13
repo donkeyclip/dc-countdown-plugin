@@ -50,6 +50,7 @@ export default class Countdown extends Effect {
    **/
   onGetContext() {
     const now = Date.now();
+    this.loadTime = now;
     const target = this.targetValue;
     let delta = target - now;
     if (delta < 0) {
@@ -107,18 +108,6 @@ export default class Countdown extends Effect {
      }  else {
       throw new Error("Invalid type for countdown effect");
     }
-
-    if(this.attrs.operation === "free") {
-      const flash = (timestamp) => {      
-        // Call animate again on the next frame
-        const val = this.down(timestamp);
-        this.element.innerHTML = val;
-        requestAnimationFrame(flash);
-      }
-      
-      // Start the loop
-      requestAnimationFrame(flash);
-    }
   }
 
   /**
@@ -133,7 +122,7 @@ export default class Countdown extends Effect {
   // eslint-disable-next-line no-unused-vars
   onProgress(millisecond) {
     if(this.attrs.operation === "free"){
-      return ;
+      millisecond = Date.now() - this.loadTime;
     }
     let value = this.down(millisecond);
     this.element.innerHTML = value;
