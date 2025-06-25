@@ -53,61 +53,71 @@ export default class Countdown extends Effect {
     this.loadTime = now;
     const target = this.targetValue;
     let delta = target - now;
-    if (delta < 0) {
-      delta = this.targetValue
-    }
+    if (delta < 0) { delta = this.targetValue; }
     delta = Math.floor(delta / 1000); // convert to seconds
 
-    if(this.attrs.type === "seconds") {
-      this.down = (ms)=> {
-        const elapsedSeconds = Math.floor(ms / 1000);
-        const remainingSeconds = delta - elapsedSeconds;
-        let value = remainingSeconds%60;
+    switch (this.attrs.type) {
+      case "seconds": {
+        this.down = (ms) => {
+          const elapsedSeconds = Math.floor(ms / 1000);
+          const remainingSeconds = delta - elapsedSeconds;
+          let value = remainingSeconds % 60;
 
-        if(value < 0) value = 0;
-        if(this.attrs.forceDoubleDigit) {
-          value = value.toString().padStart(2, '0');
-        }
-        return value;
+          if (value < 0) value = 0;
+          if (this.attrs.forceDoubleDigit) {
+            value = value.toString().padStart(2, "0");
+          }
+          return value;
+        };
+        return;
       }
-    } else if(this.attrs.type === "minutes") {
-      this.down = (ms)=> {
-        const elapsedSeconds = Math.floor(ms / 1000);
-        const remainingSeconds = delta - elapsedSeconds;
-        const secsInsightHour = remainingSeconds%(60 * 60);
-        let value = Math.floor(secsInsightHour / 60);
-        if(value < 0) value = 0;
-        if(this.attrs.forceDoubleDigit) {
-          value = value.toString().padStart(2, '0');
-        }
-        return value;
+
+      case "minutes": {
+        this.down = (ms) => {
+          const elapsedSeconds = Math.floor(ms / 1000);
+          const remainingSeconds = delta - elapsedSeconds;
+          const secsInsightHour = remainingSeconds % (60 * 60);
+          let value = Math.floor(secsInsightHour / 60);
+          if (value < 0) value = 0;
+          if (this.attrs.forceDoubleDigit) {
+            value = value.toString().padStart(2, "0");
+          }
+          return value;
+        };
+        return;
       }
-    } else if(this.attrs.type === "hours") {
-      this.down = (ms)=> {
-        const elapsedSeconds = Math.floor(ms / 1000);
-        const remainingSeconds = delta - elapsedSeconds;
-        const secsInsightDay = remainingSeconds%(60 * 60 * 24);
-        let value = Math.floor(secsInsightDay / (60 * 60));
-        if(value < 0) value = 0;
-        if(this.attrs.forceDoubleDigit) {
-          value = value.toString().padStart(2, '0');
-        }
-        return value;
+
+      case "hours": {
+        this.down = (ms) => {
+          const elapsedSeconds = Math.floor(ms / 1000);
+          const remainingSeconds = delta - elapsedSeconds;
+          const secsInsightDay = remainingSeconds % (60 * 60 * 24);
+          let value = Math.floor(secsInsightDay / (60 * 60));
+          if (value < 0) value = 0;
+          if (this.attrs.forceDoubleDigit) {
+            value = value.toString().padStart(2, "0");
+          }
+          return value;
+        };
+        return;
       }
-    } else if (this.attrs.type === "days") {
-      this.down = (ms)=> {
-        const elapsedSeconds = Math.floor(ms / 1000);
-        const remainingSeconds = delta - elapsedSeconds;
-        let value = Math.floor(remainingSeconds / (60 * 60 * 24));
-        if(value < 0) value = 0;
-        if(this.attrs.forceDoubleDigit) {
-          value = value.toString().padStart(2, '0');
-        }
-        return value;
+
+      case "days": {
+        this.down = (ms) => {
+          const elapsedSeconds = Math.floor(ms / 1000);
+          const remainingSeconds = delta - elapsedSeconds;
+          let value = Math.floor(remainingSeconds / (60 * 60 * 24));
+          if (value < 0) value = 0;
+          if (this.attrs.forceDoubleDigit) {
+            value = value.toString().padStart(2, "0");
+          }
+          return value;
+        };
+        return;
       }
-     }  else {
-      throw new Error("Invalid type for countdown effect");
     }
+
+    throw new Error("Invalid type for countdown effect");
   }
 
   /**
@@ -121,10 +131,9 @@ export default class Countdown extends Effect {
    **/
   // eslint-disable-next-line no-unused-vars
   onProgress(millisecond) {
-    if(this.attrs.operation === "free"){
+    if (this.attrs.operation === "free") {
       millisecond = Date.now() - this.loadTime;
     }
-    let value = this.down(millisecond);
-    this.element.innerHTML = value;
+    this.element.innerHTML = this.down(millisecond);
   }
 }

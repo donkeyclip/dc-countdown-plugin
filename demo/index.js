@@ -4,7 +4,8 @@ import MyPluginDefinition from "../dist/dc-countdown-plugin.esm.js";
 const MyPlugin = loadPlugin(MyPluginDefinition);
 
 const clip = new HTMLClip({
-  html: `<div class="container">
+  html: `
+  <div class="container">
   <div class="row">
     <h2>Free countdown</h2>
     <div class="timer">
@@ -72,8 +73,35 @@ const clip = new HTMLClip({
       </div>
     </div>
   </div>
+
+
+<div class="row">
+<h2>Free ending with init params</h2>
+<div class="timer">
+  <div class="col">
+    <div class="label">Days</div>
+    <div class="value" id="freeInit-days">00</div>
+    <div class="bubble">type: 'days'<br>operation: 'free'<br>forceDoubleDigit: false</div>
+  </div>
+  <div class="col">
+    <div class="label">Hours</div>
+    <div class="value" id="freeInit-hours">00</div>
+    <div class="bubble">type: 'hours'<br>operation: 'free'<br>forceDoubleDigit: false</div>
+  </div>
+  <div class="col">
+    <div class="label">Minutes</div>
+    <div class="value" id="freeInit-minutes">12</div>
+    <div class="bubble">type: 'minutes'<br>operation: 'free'<br>forceDoubleDigit: false</div>
+  </div>
+  <div class="col">
+    <div class="label">Seconds</div>
+    <div class="value" id="freeInit-seconds">59</div>
+    <div class="bubble">type: 'seconds'<br>operation: 'free'<br>forceDoubleDigit: false</div>
+  </div>
+</div>
+</div>
 </div>`,
-css: `
+  css: `
   .container {
     width: 600px;
     height: 380px;
@@ -127,12 +155,15 @@ css: `
   }
 `
 
-,
+  ,
   host: document.getElementById("clip"),
   containerParams: {
     width: "600px",
     height: "400px",
   },
+  initParams: {
+    countdownMilliseconds: 24 * 60 * 60 * 1000,
+  }
 });
 
 const closeFutureUnixTime = Date.now() + 70000; // 70 seconds from now
@@ -152,7 +183,7 @@ function getIncidents(operation, time, selectorPrefix, forceDoubleDigit) {
       duration: 20000,
     },
   );
-  
+
   const newEffect2 = new MyPlugin.Countdown(
     {
       type: "minutes",
@@ -167,7 +198,7 @@ function getIncidents(operation, time, selectorPrefix, forceDoubleDigit) {
       duration: 20000,
     },
   );
-  
+
   const newEffect3 = new MyPlugin.Countdown(
     {
       type: "hours",
@@ -189,20 +220,23 @@ function getIncidents(operation, time, selectorPrefix, forceDoubleDigit) {
 
 const freeIncidents = getIncidents("free", closeFutureUnixTime, "free", true);
 const fixedIncidents = getIncidents("fixed", closeFutureUnixTime, "fixed", true);
-const freeIncidents2 = getIncidents("free", threeDaysAndTenSecs, "free2", false, true);
-
+const freeIncidents2 = getIncidents("free", threeDaysAndTenSecs, "free2", false);
+const freeIncidentsWithInit = getIncidents("free", "@initParams.countdownMilliseconds", "freeInit", false);
 
 clip.addIncident(freeIncidents[0], 0);
 clip.addIncident(fixedIncidents[0], 0);
 clip.addIncident(freeIncidents2[0], 0);
+clip.addIncident(freeIncidentsWithInit[2], 0);
 
 clip.addIncident(freeIncidents[1], 0);
 clip.addIncident(fixedIncidents[1], 0);
 clip.addIncident(freeIncidents2[1], 0);
+clip.addIncident(freeIncidentsWithInit[2], 0);
 
 clip.addIncident(freeIncidents[2], 0);
 clip.addIncident(fixedIncidents[2], 0);
 clip.addIncident(freeIncidents2[2], 0);
+clip.addIncident(freeIncidentsWithInit[2], 0);
 
 const newEffect = new MyPlugin.Countdown(
   {
