@@ -33,12 +33,12 @@ module.exports = {
     // do not emit compiled assets that include errors
     new webpack.NoEmitOnErrorsPlugin(),
   ],
-
   devServer: {
     host: "127.0.0.1",
     port: 8090,
     historyApiFallback: false,
     hot: true,
     static: path.join(__dirname),
+    allowedHosts: 'all',
   },
 };

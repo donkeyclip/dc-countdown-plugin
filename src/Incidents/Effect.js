@@ -63,6 +63,7 @@ export default class Countdown extends Effect {
           const remainingSeconds = delta - elapsedSeconds;
           return (remainingSeconds % 60);
         };
+        return;
       }
 
       case "minutes": {
@@ -72,6 +73,7 @@ export default class Countdown extends Effect {
           const secsInsightHour = remainingSeconds % (60 * 60);
           return Math.floor(secsInsightHour / 60);
         };
+        return;
       }
 
       case "hours": {
