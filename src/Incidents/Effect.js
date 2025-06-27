@@ -61,15 +61,8 @@ export default class Countdown extends Effect {
         this.down = (ms) => {
           const elapsedSeconds = Math.floor(ms / 1000);
           const remainingSeconds = delta - elapsedSeconds;
-          let value = remainingSeconds % 60;
-
-          if (value < 0) value = 0;
-          if (this.attrs.forceDoubleDigit) {
-            value = value.toString().padStart(2, "0");
-          }
-          return value;
+          return (remainingSeconds % 60);
         };
-        return;
       }
 
       case "minutes": {
@@ -77,14 +70,8 @@ export default class Countdown extends Effect {
           const elapsedSeconds = Math.floor(ms / 1000);
           const remainingSeconds = delta - elapsedSeconds;
           const secsInsightHour = remainingSeconds % (60 * 60);
-          let value = Math.floor(secsInsightHour / 60);
-          if (value < 0) value = 0;
-          if (this.attrs.forceDoubleDigit) {
-            value = value.toString().padStart(2, "0");
-          }
-          return value;
+          return Math.floor(secsInsightHour / 60);
         };
-        return;
       }
 
       case "hours": {
@@ -92,12 +79,7 @@ export default class Countdown extends Effect {
           const elapsedSeconds = Math.floor(ms / 1000);
           const remainingSeconds = delta - elapsedSeconds;
           const secsInsightDay = remainingSeconds % (60 * 60 * 24);
-          let value = Math.floor(secsInsightDay / (60 * 60));
-          if (value < 0) value = 0;
-          if (this.attrs.forceDoubleDigit) {
-            value = value.toString().padStart(2, "0");
-          }
-          return value;
+          return Math.floor(secsInsightDay / (60 * 60));
         };
         return;
       }
@@ -106,18 +88,13 @@ export default class Countdown extends Effect {
         this.down = (ms) => {
           const elapsedSeconds = Math.floor(ms / 1000);
           const remainingSeconds = delta - elapsedSeconds;
-          let value = Math.floor(remainingSeconds / (60 * 60 * 24));
-          if (value < 0) value = 0;
-          if (this.attrs.forceDoubleDigit) {
-            value = value.toString().padStart(2, "0");
-          }
-          return value;
-        };
-        return;
+          return Math.floor(remainingSeconds / (60 * 60 * 24));
+        }
+        return
       }
     }
-
     throw new Error("Invalid type for countdown effect");
+
   }
 
   /**
@@ -134,6 +111,10 @@ export default class Countdown extends Effect {
     if (this.attrs.operation === "free") {
       millisecond = Date.now() - this.loadTime;
     }
-    this.element.innerHTML = this.down(millisecond);
+    let value = this.down(millisecond);
+    if (value < 0) {
+      value = 0;
+    }
+    this.element.innerHTML = this.attrs.forceDoubleDigit ? value.toString().padStart(2, "0") : value
   }
 }
