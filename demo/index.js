@@ -167,8 +167,8 @@ const clip = new HTMLClip({
 
 const closeFutureUnixTime = Date.now() + 70000; // 70 seconds from now
 const threeDaysAndTenSecs = 3 * 24 * 60 * 60 * 1000 + 15000; // in milliseconds
-function getIncidents(operation, time, selectorPrefix, forceDoubleDigit, includeDays = false) {
-  const effects = [
+function createIncidents(operation, time, selectorPrefix, forceDoubleDigit, includeDays = false) {
+  [
     new MyPlugin.Countdown(
       {
         type: "seconds",
@@ -209,10 +209,14 @@ function getIncidents(operation, time, selectorPrefix, forceDoubleDigit, include
         selector: `#${selectorPrefix}-hours`,
         duration: 20000,
       }
-    )]
+    )].forEach((incident) => {
+      clip.addIncident(incident, 0);
+    });
 
-  if (!includeDays) return effects;
-  effects.push(
+
+  if (!includeDays) return;
+
+  clip.addIncident(
     new MyPlugin.Countdown(
       {
         type: "days",
@@ -227,33 +231,20 @@ function getIncidents(operation, time, selectorPrefix, forceDoubleDigit, include
         duration: 20000,
       }
     )
-  )
-  return effects;
+    , 0)
 }
 
 
-getIncidents("free", closeFutureUnixTime, "free", true).forEach((incident) => {
-  clip.addIncident(incident, 0);
-});
-getIncidents("fixed", closeFutureUnixTime, "fixed", true).forEach(
-  (incident) => {
-    clip.addIncident(incident, 0);
-  }
-);
-getIncidents("free", threeDaysAndTenSecs, "free2", false, true).forEach(
-  (incident) => {
-    clip.addIncident(incident, 0);
-  }
-);
-getIncidents(
-  "fixed",
+createIncidents("free", closeFutureUnixTime, "free", true)
+createIncidents("fixed", closeFutureUnixTime, "fixed", true)
+createIncidents("free", threeDaysAndTenSecs, "free2", false, true)
+createIncidents(
+  "free",
   "@initParams.countdownMilliseconds",
   "freeInit",
   false,
   true
-).forEach((incident) => {
-  clip.addIncident(incident, 0);
-});
+)
 
 
 new Player({ clip });
