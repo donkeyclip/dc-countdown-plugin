@@ -153,9 +153,8 @@ const clip = new HTMLClip({
     line-height: 0.5rem;
     font-family: monospace;
   }
-`
+`,
 
-  ,
   host: document.getElementById("clip"),
   containerParams: {
     width: "600px",
@@ -163,96 +162,98 @@ const clip = new HTMLClip({
   },
   initParams: {
     countdownMilliseconds: 24 * 60 * 60 * 1000,
-  }
+  },
 });
 
 const closeFutureUnixTime = Date.now() + 70000; // 70 seconds from now
 const threeDaysAndTenSecs = 3 * 24 * 60 * 60 * 1000 + 15000; // in milliseconds
-function getIncidents(operation, time, selectorPrefix, forceDoubleDigit) {
-  const newEffect = new MyPlugin.Countdown(
-    {
-      type: "seconds",
-      forceDoubleDigit,
-      operation,
-      animatedAttrs: {
-        time: time,
+function getIncidents(operation, time, selectorPrefix, forceDoubleDigit, includeDays = false) {
+  const effects = [
+    new MyPlugin.Countdown(
+      {
+        type: "seconds",
+        forceDoubleDigit,
+        operation,
+        animatedAttrs: {
+          time: time,
+        },
       },
-    },
-    {
-      selector: `#${selectorPrefix}-seconds`,
-      duration: 20000,
-    },
-  );
-
-  const newEffect2 = new MyPlugin.Countdown(
-    {
-      type: "minutes",
-      operation,
-      forceDoubleDigit,
-      animatedAttrs: {
-        time: time,
+      {
+        selector: `#${selectorPrefix}-seconds`,
+        duration: 20000,
+      }
+    ),
+    new MyPlugin.Countdown(
+      {
+        type: "minutes",
+        operation,
+        forceDoubleDigit,
+        animatedAttrs: {
+          time: time,
+        },
       },
-    },
-    {
-      selector: `#${selectorPrefix}-minutes`,
-      duration: 20000,
-    },
-  );
-
-  const newEffect3 = new MyPlugin.Countdown(
-    {
-      type: "hours",
-      operation,
-      forceDoubleDigit,
-      animatedAttrs: {
-        time: time,
+      {
+        selector: `#${selectorPrefix}-minutes`,
+        duration: 20000,
+      }
+    ), new MyPlugin.Countdown(
+      {
+        type: "hours",
+        operation,
+        forceDoubleDigit,
+        animatedAttrs: {
+          time: time,
+        },
       },
-    },
-    {
-      selector: `#${selectorPrefix}-hours`,
-      duration: 20000,
-    },
-  );
+      {
+        selector: `#${selectorPrefix}-hours`,
+        duration: 20000,
+      }
+    )]
 
-  return [newEffect, newEffect2, newEffect3];
+  if (!includeDays) return effects;
+  effects.push(
+    new MyPlugin.Countdown(
+      {
+        type: "days",
+        forceDoubleDigit,
+        operation,
+        animatedAttrs: {
+          time: time,
+        },
+      },
+      {
+        selector: `#${selectorPrefix}-days`,
+        duration: 20000,
+      }
+    )
+  )
+  return effects;
 }
 
 
-const freeIncidents = getIncidents("free", closeFutureUnixTime, "free", true);
-const fixedIncidents = getIncidents("fixed", closeFutureUnixTime, "fixed", true);
-const freeIncidents2 = getIncidents("free", threeDaysAndTenSecs, "free2", false);
-const freeIncidentsWithInit = getIncidents("free", "@initParams.countdownMilliseconds", "freeInit", false);
-
-clip.addIncident(freeIncidents[0], 0);
-clip.addIncident(fixedIncidents[0], 0);
-clip.addIncident(freeIncidents2[0], 0);
-clip.addIncident(freeIncidentsWithInit[2], 0);
-
-clip.addIncident(freeIncidents[1], 0);
-clip.addIncident(fixedIncidents[1], 0);
-clip.addIncident(freeIncidents2[1], 0);
-clip.addIncident(freeIncidentsWithInit[2], 0);
-
-clip.addIncident(freeIncidents[2], 0);
-clip.addIncident(fixedIncidents[2], 0);
-clip.addIncident(freeIncidents2[2], 0);
-clip.addIncident(freeIncidentsWithInit[2], 0);
-
-const newEffect = new MyPlugin.Countdown(
-  {
-    type: "days",
-    forceDoubleDigit: false,
-    operation: "free",
-    animatedAttrs: {
-      time: threeDaysAndTenSecs,
-    },
-  },
-  {
-    selector: `#free2-days`,
-    duration: 20000,
-  },
+getIncidents("free", closeFutureUnixTime, "free", true).forEach((incident) => {
+  clip.addIncident(incident, 0);
+});
+getIncidents("fixed", closeFutureUnixTime, "fixed", true).forEach(
+  (incident) => {
+    clip.addIncident(incident, 0);
+  }
 );
+getIncidents("free", threeDaysAndTenSecs, "free2", false, true).forEach(
+  (incident) => {
+    clip.addIncident(incident, 0);
+  }
+);
+getIncidents(
+  "fixed",
+  "@initParams.countdownMilliseconds",
+  "freeInit",
+  false,
+  true
+).forEach((incident) => {
+  clip.addIncident(incident, 0);
+});
 
-clip.addIncident(newEffect, 0);
 
 new Player({ clip });
