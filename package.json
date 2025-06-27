@@ -1,6 +1,6 @@
 {
   "name": "@donkeyclip/dc-countdown-plugin",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Countdown plugin for Donkeyclip Motorcortex",
   "main": "dist/dc-countdown-plugin.cjs.js",
   "module": "dist/dc-countdown-plugin.esm.js",
