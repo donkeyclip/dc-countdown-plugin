@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.27.2",
-    "@babel/core": "^7.27.4",
+    "@babel/core": "^7.27.7",
     "@babel/eslint-parser": "^7.27.5",
     "@babel/plugin-syntax-import-assertions": "^7.27.1",
     "@babel/plugin-syntax-jsx": "^7.27.1",
@@ -77,9 +77,9 @@
     "eslint-plugin-react": "^7.37.5",
     "husky": "9.1.7",
     "lint-staged": "^16.1.2",
-    "prettier": "3.6.1",
+    "prettier": "3.6.2",
     "rimraf": "6.0.1",
-    "rollup": "4.44.0",
+    "rollup": "4.44.1",
     "webpack": "^5.99.9",
     "webpack-cli": "6.0.1",
     "webpack-dev-server": "5.2.2"
