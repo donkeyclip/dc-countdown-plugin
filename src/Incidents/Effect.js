@@ -53,7 +53,9 @@ export default class Countdown extends Effect {
     this.loadTime = now;
     const target = this.targetValue;
     let delta = target - now;
-    if (delta < 0) { delta = this.targetValue; }
+    if (delta < 0) {
+      delta = this.targetValue;
+    }
     delta = Math.floor(delta / 1000); // convert to seconds
 
     switch (this.attrs.type) {
@@ -61,7 +63,7 @@ export default class Countdown extends Effect {
         this.down = (ms) => {
           const elapsedSeconds = Math.floor(ms / 1000);
           const remainingSeconds = delta - elapsedSeconds;
-          return (remainingSeconds % 60);
+          return remainingSeconds % 60;
         };
         return;
       }
@@ -91,12 +93,11 @@ export default class Countdown extends Effect {
           const elapsedSeconds = Math.floor(ms / 1000);
           const remainingSeconds = delta - elapsedSeconds;
           return Math.floor(remainingSeconds / (60 * 60 * 24));
-        }
-        return
+        };
+        return;
       }
     }
-    throw new Error("Invalid type for countdown effect");
-
+    throw new Error(`Invalid type for countdown effect, type provided is: ${this.attrs.type}`);
   }
 
   /**
@@ -108,15 +109,11 @@ export default class Countdown extends Effect {
    * applied before reaching the execution of this method. This method's
    * arguments have already been re-calculated based on the easing.
    **/
-  // eslint-disable-next-line no-unused-vars
   onProgress(millisecond) {
-    if (this.attrs.operation === "free") {
-      millisecond = Date.now() - this.loadTime;
-    }
-    let value = this.down(millisecond);
+    let value = this.down(this.attrs.operation === "free" ? Date.now() - this.loadTime : millisecond);
     if (value < 0) {
       value = 0;
     }
-    this.element.innerHTML = this.attrs.forceDoubleDigit ? value.toString().padStart(2, "0") : value
+    this.element.innerHTML = this.attrs.forceDoubleDigit ? value.toString().padStart(2, "0") : value;
   }
 }
