@@ -104,7 +104,7 @@ const clip = new HTMLClip({
   css: `
   .container {
     width: 600px;
-    height: 380px;
+    height: 480px;
     background-color: #f0f0f0;
   }
 
@@ -158,7 +158,7 @@ const clip = new HTMLClip({
   host: document.getElementById("clip"),
   containerParams: {
     width: "600px",
-    height: "400px",
+    height: "500px",
   },
   initParams: {
     countdownMilliseconds: 24 * 60 * 60 * 1000,
