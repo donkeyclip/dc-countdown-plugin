@@ -68,7 +68,7 @@
     "core-js": "^3.43.0",
     "css-loader": "7.1.2",
     "eslint": "^8.54.0",
-    "eslint-config-prettier": "9.1.0",
+    "eslint-config-prettier": "10.1.8",
     "eslint-plugin-babel": "5.3.1",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-node": "11.1.0",
